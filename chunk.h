@@ -2,18 +2,8 @@
 #ifndef _CHUNK_H_
 #define _CHUNK_H_
 
-#include "common.h"
+#include "op_code.h"
 #include "value.h"
-
-typedef enum {
-    OP_CONSTANT,
-    OP_NEG,
-    OP_ADD,
-    OP_SUB,
-    OP_MUL,
-    OP_DIV,
-    OP_RETURN,
-}OpCode;
 
 typedef struct {
     int count;
@@ -23,13 +13,13 @@ typedef struct {
     ValueArray constants;
 }Chunk;
 
-void initChunk(Chunk *chunk);
+void init_chunk(Chunk *chunk);
 
-void writeChunk(Chunk *chunk, uint8_t byte, int line);
+void write_chunk(Chunk *chunk, uint8_t byte, int line);
 
-int addConstant(Chunk* chunk, Value value);
+int add_constant(Chunk *chunk, Value value);
 
-void freeChunk(Chunk *chunk);
+void free_chunk(Chunk *chunk);
 
 #endif
 

@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "value.h"
 
-void disassembleChunk(Chunk *chunk, const char *name)
+void disassemble_chunk(Chunk *chunk, const char *name)
 {
     printf("== %s ==\n", name);
     for (int offset=0; offset<chunk->count;)
@@ -20,7 +20,7 @@ static int constantInstruction(const char *name, Chunk *chunk, int offset)
 {
     uint8_t index = chunk->code[offset+1];
     printf("%-16s %4d '", name, index);
-    printValue(chunk->constants.values[index]);
+    print_value(chunk->constants.values[index]);
     printf("'\n");
     return offset + 2;
 }
@@ -41,7 +41,7 @@ int disassembleInstruction(Chunk *chunk, int offset)
             next = constantInstruction("op_constant", chunk, offset);
             break;
 
-        case OP_NEG:
+        case OP_NEGATE:
             next = simpleInstruction("op_negate", offset);
             break;
 
@@ -49,15 +49,15 @@ int disassembleInstruction(Chunk *chunk, int offset)
             next = simpleInstruction("op_add", offset);
             break;
 
-        case OP_SUB:
+        case OP_SUBTRACT:
             next = simpleInstruction("op_sub", offset);
             break;
 
-        case OP_MUL:
+        case OP_MULTIPLY:
             next = simpleInstruction("op_mul", offset);
             break;
 
-        case OP_DIV:
+        case OP_DIVIDE:
             next = simpleInstruction("op_div", offset);
             break;
 
@@ -71,5 +71,10 @@ int disassembleInstruction(Chunk *chunk, int offset)
             break;
     }
     return next;
+}
+
+void print_value(Value value)
+{
+    printf("%g", value);
 }
 

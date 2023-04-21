@@ -5,25 +5,49 @@
 #include "common.h"
 
 typedef enum {
-  // Single-character tokens.
-  TOKEN_LEFT_PAREN, TOKEN_RIGHT_PAREN,
-  TOKEN_LEFT_BRACE, TOKEN_RIGHT_BRACE,
-  TOKEN_COMMA, TOKEN_DOT, TOKEN_MINUS, TOKEN_PLUS,
-  TOKEN_SEMICOLON, TOKEN_SLASH, TOKEN_STAR,
-  // One or two character tokens.
-  TOKEN_BANG, TOKEN_BANG_EQUAL,
-  TOKEN_EQUAL, TOKEN_EQUAL_EQUAL,
-  TOKEN_GREATER, TOKEN_GREATER_EQUAL,
-  TOKEN_LESS, TOKEN_LESS_EQUAL,
-  // Literals.
-  TOKEN_IDENTIFIER, TOKEN_STRING, TOKEN_NUMBER,
-  // Keywords.
-  TOKEN_AND, TOKEN_CLASS, TOKEN_ELSE, TOKEN_FALSE,
-  TOKEN_FOR, TOKEN_FUN, TOKEN_IF, TOKEN_NIL, TOKEN_OR,
-  TOKEN_PRINT, TOKEN_RETURN, TOKEN_SUPER, TOKEN_THIS,
-  TOKEN_TRUE, TOKEN_VAR, TOKEN_WHILE,
-
-  TOKEN_ERROR, TOKEN_EOF
+    TOKEN_LEFT_PAREN,           // (
+    TOKEN_RIGHT_PAREN,          // )
+    TOKEN_LEFT_BRACE,           // {
+    TOKEN_RIGHT_BRACE,          // }
+    TOKEN_DOT,                  // .
+    TOKEN_COMMA,                // ,
+    TOKEN_SEMICOLON,            // ;
+    TOKEN_PLUS,                 // +
+    TOKEN_MINUS,                // -
+    TOKEN_STAR,                 // *
+    TOKEN_SLASH,                // /
+    TOKEN_BANG,                 // !
+    TOKEN_BANG_EQUAL,           // !=
+    TOKEN_EQUAL,                // =
+    TOKEN_EQUAL_EQUAL,          // ==
+    TOKEN_GREATER,              // >
+    TOKEN_GREATER_EQUAL,        // >=
+    TOKEN_LESS,                 // <
+    TOKEN_LESS_EQUAL,           // <=
+    TOKEN_NUMBER,               // 数字
+    TOKEN_STRING,               // 字符串
+    TOKEN_IDENTIFIER,           // 标识符
+    // 关键字
+    TOKEN_AND,
+    TOKEN_CLASS,
+    TOKEN_ELSE,
+    TOKEN_FALSE,
+    TOKEN_FOR,
+    TOKEN_FUN,
+    TOKEN_IF,
+    TOKEN_NIL,
+    TOKEN_OR,
+    TOKEN_PRINT,
+    TOKEN_RETURN,
+    TOKEN_SUPER,
+    TOKEN_THIS,
+    TOKEN_TRUE,
+    TOKEN_VAR,
+    TOKEN_WHILE,
+    // 结束标志
+    TOKEN_EOF,
+    // 错误标志
+    TOKEN_ERROR,
 }TokenType;
 
 typedef struct {
@@ -33,9 +57,9 @@ typedef struct {
     int line;
 }Token;
 
-void initScanner(const char *source);
+void init_scanner(const char *source);
 
-Token scanToken();
+Token scan_token();
 
 #endif
 

@@ -2,16 +2,7 @@
 #ifndef _VM_H_
 #define _VM_H_
 
-#include "chunk.h"
-
-#define STACK_MAX           (256)
-
-typedef struct {
-    Chunk *chunk;
-    uint8_t *ip;
-    Value stack[STACK_MAX];
-    Value *top;
-}VM;
+#include "common.h"
 
 typedef enum {
     INTERPRET_OK,
@@ -19,15 +10,11 @@ typedef enum {
     INTERPRET_RUNTIME_ERROR
 }InterpretResult;
 
-void initVM();
+void init_vm();
 
-void freeVM();
+void free_vm();
 
 InterpretResult interpret(const char *source);
-
-void push(Value value);
-
-Value pop();
 
 #endif
 

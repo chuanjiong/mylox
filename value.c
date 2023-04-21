@@ -1,16 +1,15 @@
 
-#include <stdio.h>
 #include "value.h"
 #include "memory.h"
 
-void initValueArray(ValueArray* array)
+void init_value_array(ValueArray* array)
 {
     array->count = 0;
     array->capacity = 0;
     array->values = NULL;
 }
 
-void writeValueArray(ValueArray* array, Value value)
+void write_value_array(ValueArray* array, Value value)
 {
     if (array->capacity < array->count+1) {
         int old_capacity = array->capacity;
@@ -21,14 +20,9 @@ void writeValueArray(ValueArray* array, Value value)
     array->count++;
 }
 
-void freeValueArray(ValueArray* array)
+void free_value_array(ValueArray* array)
 {
     FREE_ARRAY(Value, array->values, array->capacity);
-    initValueArray(array);
-}
-
-void printValue(Value value)
-{
-    printf("%g", value);
+    init_value_array(array);
 }
 

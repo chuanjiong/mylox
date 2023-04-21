@@ -1,81 +1,75 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "common.h"
-#include "chunk.h"
-#include "debug.h"
 #include "vm.h"
 
 //gcc *.c -o test
 
-static void repl()
+static void run_prompt()
 {
-    char line[1024];
+    char line[1024] = {0};
     while (1) {
         printf("> ");
-        if (!fgets(line, sizeof(line), stdin)) {
-            printf("\n");
+        if (!fgets(line, sizeof(line), stdin))
             break;
-        }
-        interpret(line);
+        InterpretResult result = interpret(line);
+        if (result == INTERPRET_COMPILE_ERROR)
+            printf("compile error!\n");
+        else if (result == INTERPRET_RUNTIME_ERROR)
+            printf("runtime error!\n");
     }
 }
 
-static char *readFile(const char *file)
+static char *read_file(const char *file)
 {
     FILE *fp = fopen(file, "rb");
     if (fp == NULL) {
-        printf("Could not open file %s.\n", file);
+        printf("Could not open file %s\n", file);
         return NULL;
     }
-    fseek(fp, 0L, SEEK_END);
-    size_t fileSize = ftell(fp);
+    fseek(fp, 0, SEEK_END);
+    int file_size = ftell(fp);
     rewind(fp);
-    char *buffer = (char *)malloc(fileSize + 1);
-    if (buffer == NULL) {
-        printf("Not enough memory to read %s.\n", file);
+    char *buf = (char *)malloc(file_size+1);
+    if (buf == NULL) {
+        printf("Not enough memory to read %s\n", file);
         fclose(fp);
         return NULL;
     }
-    size_t bytesRead = fread(buffer, sizeof(char), fileSize, fp);
-    if (bytesRead < fileSize) {
-        printf("Could not read file %s.\n", file);
-        free(buffer);
+    int r = fread(buf, 1, file_size, fp);
+    if (r != file_size) {
+        printf("Could not read file %s\n", file);
+        free(buf);
         fclose(fp);
         return NULL;
     }
-    buffer[bytesRead] = '\0';
+    buf[file_size] = 0;
     fclose(fp);
-    return buffer;
+    return buf;
 }
 
-static void runFile(const char *file)
+static void run_file(const char *file)
 {
-    char *source = readFile(file);
+    char *source = read_file(file);
+    if (source == NULL)
+        return;
+    printf("======== run: %s ========\n", file);
     InterpretResult result = interpret(source);
     free(source);
     if (result == INTERPRET_COMPILE_ERROR)
         printf("compile error!\n");
-    if (result == INTERPRET_RUNTIME_ERROR)
+    else if (result == INTERPRET_RUNTIME_ERROR)
         printf("runtime error!\n");
 }
 
 int main(int argc, char **argv)
 {
-    initVM();
-
-    if (argc == 1) {
-        repl();
-    }
-    else if (argc == 2) {
-        runFile(argv[1]);
-    }
+    init_vm();
+    if (argc == 1)
+        run_prompt();
     else {
-        printf("Usage: %s [script]\n", argv[0]);
+        for (int i=1; i<argc; i++)
+            run_file(argv[i]);
     }
-
-    freeVM();
+    free_vm();
     return 0;
 }
 
