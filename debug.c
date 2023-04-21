@@ -41,8 +41,36 @@ int disassembleInstruction(Chunk *chunk, int offset)
             next = constantInstruction("op_constant", chunk, offset);
             break;
 
+        case OP_NIL:
+            next = simpleInstruction("op_nil", offset);
+            break;
+
+        case OP_FALSE:
+            next = simpleInstruction("op_false", offset);
+            break;
+
+        case OP_TRUE:
+            next = simpleInstruction("op_true", offset);
+            break;
+
+        case OP_NOT:
+            next = simpleInstruction("op_not", offset);
+            break;
+
         case OP_NEGATE:
             next = simpleInstruction("op_negate", offset);
+            break;
+
+        case OP_EQUAL:
+            next = simpleInstruction("op_equal", offset);
+            break;
+
+        case OP_GREATER:
+            next = simpleInstruction("op_greater", offset);
+            break;
+
+        case OP_LESS:
+            next = simpleInstruction("op_less", offset);
             break;
 
         case OP_ADD:
@@ -75,6 +103,12 @@ int disassembleInstruction(Chunk *chunk, int offset)
 
 void print_value(Value value)
 {
-    printf("%g", value);
+    switch (value.type) {
+    case VAL_BOOL:
+      printf(AS_BOOL(value) ? "true" : "false");
+      break;
+    case VAL_NIL: printf("nil"); break;
+    case VAL_NUMBER: printf("%g", AS_NUMBER(value)); break;
+  }
 }
 

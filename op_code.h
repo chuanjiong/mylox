@@ -4,7 +4,14 @@
 
 typedef enum {
     OP_CONSTANT,
+    OP_NIL,
+    OP_FALSE,
+    OP_TRUE,
+    OP_NOT,
     OP_NEGATE,
+    OP_EQUAL,
+    OP_GREATER,
+    OP_LESS,
     OP_ADD,
     OP_SUBTRACT,
     OP_MULTIPLY,

@@ -26,3 +26,15 @@ void free_value_array(ValueArray* array)
     init_value_array(array);
 }
 
+bool is_values_equal(Value a, Value b)
+{
+    if (a.type != b.type) return false;
+    switch (a.type) {
+        case VAL_NIL: return true;
+        case VAL_BOOL: return AS_BOOL(a) == AS_BOOL(b);
+        case VAL_NUMBER: return AS_NUMBER(a) == AS_NUMBER(b);
+        default: break;
+    }
+    return false;
+}
+
