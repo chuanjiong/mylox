@@ -3,7 +3,7 @@
 #define _CHUNK_H_
 
 #include "op_code.h"
-#include "value.h"
+#include "object.h"
 
 typedef struct {
     int count;
