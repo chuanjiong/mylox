@@ -53,7 +53,19 @@ int disassembleInstruction(Chunk *chunk, int offset)
         SIMPLE_INSTRUCTION(OP_SUBTRACT);
         SIMPLE_INSTRUCTION(OP_MULTIPLY);
         SIMPLE_INSTRUCTION(OP_DIVIDE);
+        SIMPLE_INSTRUCTION(OP_PRINT);
+        SIMPLE_INSTRUCTION(OP_POP);
         SIMPLE_INSTRUCTION(OP_RETURN);
+
+        case OP_DEFINE_GLOBAL:
+      return constant_instruction("OP_DEFINE_GLOBAL", chunk,
+                                 offset);
+
+        case OP_GET_GLOBAL:
+      return constant_instruction("OP_GET_GLOBAL", chunk, offset);
+
+      case OP_SET_GLOBAL:
+      return constant_instruction("OP_SET_GLOBAL", chunk, offset);
 
         default:
             printf("Unknown opcode %d\n", instruction);

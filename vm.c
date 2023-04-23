@@ -27,11 +27,13 @@ void init_vm()
 {
     vm.top = vm.stack;
     vm.objects = NULL;
+    initTable(&vm.globals);
     initTable(&vm.strings);
 }
 
 void free_vm()
 {
+    freeTable(&vm.globals);
     freeTable(&vm.strings);
     free_objects();
 }
@@ -74,6 +76,7 @@ static InterpretResult run()
 {
 #define READ_BYTE()         (*vm.ip++)
 #define READ_CONSTANT()     (vm.chunk->constants.values[READ_BYTE()])
+#define READ_STRING()       AS_STRING(READ_CONSTANT())
 #define BINARY_OP(type, op) do { \
                                 if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
                                     runtime_error("Operands must be numbers."); \
@@ -149,10 +152,45 @@ static InterpretResult run()
             case OP_MULTIPLY:   BINARY_OP(NUMBER_VAL, *);   break;
             case OP_DIVIDE:     BINARY_OP(NUMBER_VAL, /);   break;
 
+            case OP_PRINT: {
+                print_value(pop());
+                printf("\n");
+                break;
+            }
+
+            case OP_POP: pop(); break;
+
+            case OP_DEFINE_GLOBAL: {
+        ObjString* name = READ_STRING();
+        tableSet(&vm.globals, name, peek(0));
+        pop();
+        break;
+      }
+
+      case OP_GET_GLOBAL: {
+        ObjString* name = READ_STRING();
+        Value value;
+        if (!tableGet(&vm.globals, name, &value)) {
+          runtime_error("Undefined variable '%s'.", name->chars);
+          return INTERPRET_RUNTIME_ERROR;
+        }
+        push(value);
+        break;
+      }
+
+      case OP_SET_GLOBAL: {
+        ObjString* name = READ_STRING();
+        if (tableSet(&vm.globals, name, peek(0))) {
+          tableDelete(&vm.globals, name);
+          runtime_error("Undefined variable '%s'.", name->chars);
+          return INTERPRET_RUNTIME_ERROR;
+        }
+        break;
+      }
+
             case OP_RETURN:
                 {
-                    print_value(pop());
-                    printf("\n");
+
                     return INTERPRET_OK;
                 }
                 break;
@@ -165,6 +203,7 @@ static InterpretResult run()
     return INTERPRET_OK;
 
 #undef BINARY_OP
+#undef READ_STRING
 #undef READ_CONSTANT
 #undef READ_BYTE
 }
