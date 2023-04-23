@@ -27,10 +27,12 @@ void init_vm()
 {
     vm.top = vm.stack;
     vm.objects = NULL;
+    initTable(&vm.strings);
 }
 
 void free_vm()
 {
+    freeTable(&vm.strings);
     free_objects();
 }
 

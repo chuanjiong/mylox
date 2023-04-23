@@ -34,13 +34,7 @@ bool is_values_equal(Value a, Value b)
         case VAL_NIL: return true;
         case VAL_BOOL: return AS_BOOL(a) == AS_BOOL(b);
         case VAL_NUMBER: return AS_NUMBER(a) == AS_NUMBER(b);
-        case VAL_OBJ:
-            if (OBJ_TYPE(a) == OBJ_STRING && OBJ_TYPE(b) == OBJ_STRING) {
-                ObjString *astr = AS_STRING(a);
-                ObjString *bstr = AS_STRING(b);
-                return astr->length == bstr->length && memcmp(astr->chars, bstr->chars, astr->length) == 0;
-            }
-            break;
+        case VAL_OBJ:    return AS_OBJ(a) == AS_OBJ(b);
         default: break;
     }
     return false;
