@@ -99,6 +99,7 @@ static Token error_token(const char *message)
     token.start = message;
     token.length = strlen(message);
     token.line = scanner.line;
+    token.unexpect = scanner.current[-1];
     return token;
 }
 

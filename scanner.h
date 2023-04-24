@@ -55,6 +55,7 @@ typedef struct {
     const char *start;
     int length;
     int line;
+    char unexpect;
 }Token;
 
 void init_scanner(const char *source);
