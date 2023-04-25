@@ -2,10 +2,7 @@
 #ifndef _VALUE_H_
 #define _VALUE_H_
 
-#include "common.h"
-
-typedef struct Obj Obj;
-typedef struct ObjString ObjString;
+#include "obj_string.h"
 
 typedef enum {
     VAL_NIL,
@@ -37,17 +34,16 @@ typedef struct {
 #define AS_NUMBER(value)    ((value).as.number)
 #define AS_OBJ(value)       ((value).as.obj)
 
-typedef struct {
-    int count;
-    int capacity;
-    Value *values;
-}ValueArray;
+#define OBJ_TYPE(value)     (AS_OBJ(value)->type)
 
-void init_value_array(ValueArray* array);
+#define IS_STRING(value)    is_obj_type((value), OBJ_STRING)
 
-void write_value_array(ValueArray* array, Value value);
+#define AS_STRING(value)    ((ObjString *)AS_OBJ(value))
+#define AS_CSTRING(value)   (((ObjString *)AS_OBJ(value))->chars)
 
-void free_value_array(ValueArray* array);
+static inline bool is_obj_type(Value value, ObjType type) {
+    return IS_OBJ(value) && OBJ_TYPE(value) == type;
+}
 
 bool is_values_equal(Value a, Value b);
 

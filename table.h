@@ -5,7 +5,7 @@
 #include "common.h"
 #include "value.h"
 
-#define TABLE_MAX_LOAD 0.75
+#define TABLE_MAX_LOAD          (0.75)
 
 typedef struct {
     ObjString *key;
@@ -18,20 +18,19 @@ typedef struct {
     Entry *entries;
 }Table;
 
-void initTable(Table* table);
+void init_table(Table *table);
 
-void freeTable(Table* table);
+void free_table(Table *table);
 
-bool tableSet(Table* table, ObjString* key, Value value);
+bool table_set(Table *table, ObjString *key, Value value);
 
-bool tableGet(Table* table, ObjString* key, Value* value);
+bool table_get(Table *table, ObjString *key, Value *value);
 
-bool tableDelete(Table* table, ObjString* key);
+bool table_del(Table *table, ObjString *key);
 
-void tableAddAll(Table* from, Table* to);
+void table_copy(Table *from, Table *to);
 
-ObjString* tableFindString(Table* table, const char* chars,
-                           int length, uint32_t hash);
+ObjString *table_find_string(Table *table, const char *chars, int length, uint32_t hash);
 
 #endif
 
