@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "debug.h"
 #include "value.h"
+#include "obj_function.h"
 
 void disassemble_chunk(Chunk *chunk, const char *name)
 {
@@ -96,6 +97,9 @@ int disassembleInstruction(Chunk *chunk, int offset)
       case OP_LOOP:
       return jumpInstruction("OP_LOOP", -1, chunk, offset);
 
+      case OP_CALL:
+      return byteInstruction("OP_CALL", chunk, offset);
+
         default:
             printf("Unknown opcode %d\n", instruction);
             return offset+1;
@@ -108,6 +112,12 @@ void print_object(Value value)
 {
     switch (OBJ_TYPE(value)) {
         case OBJ_STRING: printf("%s", AS_CSTRING(value)); break;
+        case OBJ_FUNCTION:
+
+        printf("<fn %s>", AS_FUNCTION(value)->name == NULL? "<script>":AS_FUNCTION(value)->name->chars); break;
+        case OBJ_NATIVE:
+      printf("<native fn>");
+      break;
     }
 }
 

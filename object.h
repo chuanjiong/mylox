@@ -6,6 +6,8 @@
 
 typedef enum {
     OBJ_STRING,
+    OBJ_FUNCTION,
+    OBJ_NATIVE,
 }ObjType;
 
 typedef struct Obj {
