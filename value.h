@@ -47,6 +47,10 @@ typedef struct {
 
 #define AS_NATIVE(value) (((ObjNative*)AS_OBJ(value))->function)
 
+#define IS_CLOSURE(value)      is_obj_type(value, OBJ_CLOSURE)
+
+#define AS_CLOSURE(value)      ((ObjClosure*)AS_OBJ(value))
+
 static inline bool is_obj_type(Value value, ObjType type) {
     return IS_OBJ(value) && OBJ_TYPE(value) == type;
 }
