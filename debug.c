@@ -123,6 +123,13 @@ int disassembleInstruction(Chunk *chunk, int offset)
     case OP_CLOSE_UPVALUE:
       return simple_instruction("OP_CLOSE_UPVALUE", offset);
 
+      case OP_CLASS:
+      return constant_instruction("OP_CLASS", chunk, offset);
+      case OP_GET_PROPERTY:
+      return constant_instruction("OP_GET_PROPERTY", chunk, offset);
+    case OP_SET_PROPERTY:
+      return constant_instruction("OP_SET_PROPERTY", chunk, offset);
+
         default:
             printf("Unknown opcode %d\n", instruction);
             return offset+1;
@@ -147,6 +154,13 @@ void print_object(Value value)
       break;
       case OBJ_UPVALUE:
       printf("upvalue");
+      break;
+      case OBJ_CLASS:
+      printf("%s", AS_CLASS(value)->name->chars);
+      break;
+      case OBJ_INSTANCE:
+      printf("%s instance",
+             AS_INSTANCE(value)->klass->name->chars);
       break;
     }
 }

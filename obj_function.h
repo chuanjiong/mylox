@@ -5,6 +5,7 @@
 #include "object.h"
 #include "obj_string.h"
 #include "chunk.h"
+#include "table.h"
 
 typedef struct {
     Obj obj;
@@ -28,6 +29,16 @@ typedef struct {
   int upvalueCount;
 } ObjClosure;
 
+typedef struct {
+  Obj obj;
+  ObjString* name;
+} ObjClass;
+
+typedef struct {
+  Obj obj;
+  ObjClass* klass;
+  Table fields;
+} ObjInstance;
 
 
 typedef Value (*NativeFn)(int argCount, Value* args);
@@ -46,6 +57,10 @@ ObjNative* newNative(NativeFn function);
 ObjClosure* newClosure(ObjFunction* function);
 
 ObjUpvalue* newUpvalue(Value* slot);
+
+ObjClass* newClass(ObjString* name);
+
+ObjInstance* newInstance(ObjClass* klass);
 
 #endif
 

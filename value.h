@@ -51,6 +51,14 @@ typedef struct {
 
 #define AS_CLOSURE(value)      ((ObjClosure*)AS_OBJ(value))
 
+#define IS_CLASS(value)        is_obj_type(value, OBJ_CLASS)
+#define AS_CLASS(value)        ((ObjClass*)AS_OBJ(value))
+
+#define IS_INSTANCE(value)     is_obj_type(value, OBJ_INSTANCE)
+#define AS_INSTANCE(value)     ((ObjInstance*)AS_OBJ(value))
+
+
+
 static inline bool is_obj_type(Value value, ObjType type) {
     return IS_OBJ(value) && OBJ_TYPE(value) == type;
 }

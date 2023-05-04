@@ -453,6 +453,19 @@ static void call(bool can_assign)
     emit_byte2(OP_CALL, arg_count);
 }
 
+static void dot(bool can_assign)
+{
+    consume(TOKEN_IDENTIFIER, "Expect property name after '.'.");
+    uint8_t name = identifier_constant(parser.previous);
+
+    if (can_assign && match(TOKEN_EQUAL)) {
+        expression();
+        emit_byte2(OP_SET_PROPERTY, name);
+    } else {
+        emit_byte2(OP_GET_PROPERTY, name);
+    }
+}
+
 static void grouping(bool can_assign)
 {
     expression();
@@ -464,7 +477,7 @@ static ParseRule rules[] = {
     [TOKEN_RIGHT_PAREN]     = {NULL,        NULL,       PREC_NONE},
     [TOKEN_LEFT_BRACE]      = {NULL,        NULL,       PREC_NONE},
     [TOKEN_RIGHT_BRACE]     = {NULL,        NULL,       PREC_NONE},
-    [TOKEN_DOT]             = {NULL,        NULL,       PREC_NONE},
+    [TOKEN_DOT]             = {NULL,        dot,        PREC_CALL},
     [TOKEN_COMMA]           = {NULL,        NULL,       PREC_NONE},
     [TOKEN_SEMICOLON]       = {NULL,        NULL,       PREC_NONE},
     [TOKEN_PLUS]            = {NULL,        binary,     PREC_TERM},
@@ -697,6 +710,19 @@ static void fun_declaration()
     define_variable(global);
 }
 
+static void class_declaration()
+{
+    consume(TOKEN_IDENTIFIER, "Expect class name.");
+    uint8_t nameConstant = identifier_constant(parser.previous);
+    declare_variable();
+
+    emit_byte2(OP_CLASS, nameConstant);
+    define_variable(nameConstant);
+
+    consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
+    consume(TOKEN_RIGHT_BRACE, "Expect '}' after class body.");
+}
+
 static void synchronize()
 {
     parser.need_sync = false;
@@ -721,6 +747,7 @@ static void declaration()
 {
     if (match(TOKEN_VAR)) var_declaration();
     else if (match(TOKEN_FUN)) fun_declaration();
+    else if (match(TOKEN_CLASS)) class_declaration();
     else statement();
     if (parser.need_sync) synchronize();
 }
