@@ -143,6 +143,7 @@ void print_object(Value value)
       break;
       case OBJ_CLOSURE:
     //   print_function(AS_CLOSURE(value)->function);
+    printf("closure");
       break;
       case OBJ_UPVALUE:
       printf("upvalue");

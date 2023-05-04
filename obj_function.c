@@ -25,7 +25,7 @@ ObjNative* newNative(NativeFn function) {
 }
 
 ObjClosure* newClosure(ObjFunction* function) {
-  ObjUpvalue** upvalues = ALLOCATE(ObjUpvalue*,
+  ObjUpvalue** upvalues = ALLOCATE_ARRAY(ObjUpvalue*,
                                    function->upvalueCount);
   for (int i = 0; i < function->upvalueCount; i++) {
     upvalues[i] = NULL;

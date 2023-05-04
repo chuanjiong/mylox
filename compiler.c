@@ -94,10 +94,10 @@ static void init_compiler(Compiler *compiler, FunctionType type)
     local->name.length = 0;
     local->isCaptured = false;
 }
-static void emit_byte(uint8_t byte);
+static void emit_return();
 static ObjFunction *end()
 {
-    emit_byte(OP_RETURN);
+    emit_return();
 
     ObjFunction *function = current->function;
 #ifdef DEBUG_PRINT_CODE
