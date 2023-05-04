@@ -7,13 +7,13 @@
 
 VM vm;
 
-static void push(Value value)
+void push(Value value)
 {
     *vm.top = value;
     vm.top++;
 }
 
-static Value pop()
+Value pop()
 {
     vm.top--;
     return *vm.top;
@@ -41,12 +41,23 @@ void init_vm()
     vm.top = vm.stack;
     vm.objects = NULL;
     vm.openUpvalues = NULL;
+      vm.grayCount = 0;
+  vm.grayCapacity = 0;
+  vm.grayStack = NULL;
+      vm.bytesAllocated = 0;
+  vm.nextGC = 1024 * 1024;
     init_table(&vm.globals);
     init_table(&vm.strings);
     defineNative("clock", clockNative);
+
+
+
 }
 
-static void freeObject(Obj* object) {
+void freeObject(Obj* object) {
+  #ifdef DEBUG_LOG_GC
+  printf("%p free type %d\n", (void*)object, object->type);
+#endif
   switch (object->type) {
     case OBJ_STRING: {
       free_string((ObjString*)object);
@@ -83,6 +94,8 @@ void free_vm()
         freeObject(object);
         object = next;
     }
+
+     free(vm.grayStack);
 }
 
 static void runtime_error(const char* format, ...)
@@ -117,8 +130,8 @@ static bool isFalsey(Value value)
 
 static void concatenate()
 {
-    ObjString* b = AS_STRING(pop());
-    ObjString* a = AS_STRING(pop());
+     ObjString* b = AS_STRING(peek(0));
+  ObjString* a = AS_STRING(peek(1));
 
     int length = a->length + b->length;
     char* chars = ALLOCATE_ARRAY(char, length + 1);
@@ -127,6 +140,9 @@ static void concatenate()
     chars[length] = '\0';
 
     ObjString* result = take_string(chars, length);
+     pop();
+  pop();
+
     push(OBJ_VAL(result));
 }
 

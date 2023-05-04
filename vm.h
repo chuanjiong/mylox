@@ -26,6 +26,13 @@ typedef struct {
     Table strings;
     Obj *objects;
     ObjUpvalue* openUpvalues;
+
+    int grayCount;
+  int grayCapacity;
+  Obj** grayStack;
+
+  size_t bytesAllocated;
+  size_t nextGC;
 }VM;
 
 typedef enum {
@@ -41,6 +48,12 @@ void init_vm();
 void free_vm();
 
 InterpretResult interpret(const char *source);
+
+void freeObject(Obj* object);
+
+void push(Value value);
+
+Value pop();
 
 #endif
 

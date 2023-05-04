@@ -3,6 +3,7 @@
 #include "scanner.h"
 #include "debug.h"
 #include "obj_function.h"
+#include "memory.h"
 
 typedef struct {
     Token current;
@@ -734,5 +735,13 @@ ObjFunction *compile(const char *source)
     while (!match(TOKEN_EOF)) declaration();
     ObjFunction *function = end();
     return (!parser.scan_error && !parser.parse_error) ? function : NULL;
+}
+
+void markCompilerRoots() {
+  Compiler* compiler = current;
+  while (compiler != NULL) {
+    markObject((Obj*)compiler->function);
+    compiler = compiler->enclosing;
+  }
 }
 
