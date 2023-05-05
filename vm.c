@@ -580,6 +580,40 @@ static InterpretResult run()
         break;
       }
 
+      case OP_INHERIT: {
+        Value superclass = peek(1);
+        if (!IS_CLASS(superclass)) {
+          runtime_error("Superclass must be a class.");
+          return INTERPRET_RUNTIME_ERROR;
+        }
+        ObjClass* subclass = AS_CLASS(peek(0));
+        table_copy(&AS_CLASS(superclass)->methods,
+                    &subclass->methods);
+        pop(); // Subclass.
+        break;
+      }
+
+      case OP_GET_SUPER: {
+        ObjString* name = READ_STRING();
+        ObjClass* superclass = AS_CLASS(pop());
+
+        if (!bindMethod(superclass, name)) {
+          return INTERPRET_RUNTIME_ERROR;
+        }
+        break;
+      }
+
+      case OP_SUPER_INVOKE: {
+        ObjString* method = READ_STRING();
+        int argCount = READ_BYTE();
+        ObjClass* superclass = AS_CLASS(pop());
+        if (!invokeFromClass(superclass, method, argCount)) {
+          return INTERPRET_RUNTIME_ERROR;
+        }
+        frame = &vm.frames[vm.frameCount - 1];
+        break;
+      }
+
             default:
                 printf("Unknown instruction %d\n", instruction);
                 return INTERPRET_RUNTIME_ERROR;
