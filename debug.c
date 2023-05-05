@@ -191,11 +191,23 @@ void print_object(Value value)
 
 void print_value(Value value)
 {
+  #ifdef NAN_BOXING
+  if (IS_BOOL(value)) {
+    printf(AS_BOOL(value) ? "true" : "false");
+  } else if (IS_NIL(value)) {
+    printf("nil");
+  } else if (IS_NUMBER(value)) {
+    printf("%g", AS_NUMBER(value));
+  } else if (IS_OBJ(value)) {
+    print_object(value);
+  }
+#else
     switch (value.type) {
         case VAL_NIL: printf("nil"); break;
         case VAL_BOOL: printf(AS_BOOL(value) ? "true" : "false"); break;
         case VAL_NUMBER: printf("%g", AS_NUMBER(value)); break;
         case VAL_OBJ: print_object(value); break;
     }
+    #endif
 }
 
