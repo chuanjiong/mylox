@@ -66,6 +66,8 @@ static Parser parser;
 static Compiler *current = NULL;
 static Chunk *compiling_chunk;
 
+static Scanner scanner;
+
 typedef struct ClassCompiler {
   struct ClassCompiler* enclosing;
   bool hasSuperclass;
@@ -134,10 +136,14 @@ static void advance()
 {
     parser.previous = parser.current;
     while (1) {
-        parser.current = scan_token();
-        if (parser.current.type != TOKEN_ERROR) return;
+        parser.current = scan_token(&scanner);
+        if (parser.current.type != TOKEN_ERROR_UNEXPECTED_CHARACTER
+            && parser.current.type != TOKEN_ERROR_UNTERMINATED_STRING) return;
         parser.scan_error = true;
-        printf("[Line %d] scan error at '%c', %s\n", parser.current.line, parser.current.unexpect, parser.current.start);
+        if (parser.current.type == TOKEN_ERROR_UNEXPECTED_CHARACTER)
+            printf("[Line %d] scan error at '%.*s', unexpected character.\n", parser.current.line, parser.current.length, parser.current.start);
+        else if (parser.current.type == TOKEN_ERROR_UNTERMINATED_STRING)
+            printf("[Line %d] scan error at '%.*s', unterminated string.\n", parser.current.line, parser.current.length, parser.current.start);
     }
 }
 
@@ -574,7 +580,6 @@ static ParseRule rules[] = {
     [TOKEN_VAR]             = {NULL,        NULL,       PREC_NONE},
     [TOKEN_WHILE]           = {NULL,        NULL,       PREC_NONE},
     [TOKEN_EOF]             = {NULL,        NULL,       PREC_NONE},
-    [TOKEN_ERROR]           = {NULL,        NULL,       PREC_NONE},
 };
 
 static ParseRule *get_rule(TokenType type)
@@ -872,7 +877,7 @@ static void declaration()
 
 ObjFunction *compile(const char *source)
 {
-    init_scanner(source);
+    init_scanner(&scanner, source);
     init_parser();
     Compiler compiler;
     init_compiler(&compiler, TYPE_SCRIPT);

@@ -47,7 +47,8 @@ typedef enum {
     // 结束标志
     TOKEN_EOF,
     // 错误标志
-    TOKEN_ERROR,
+    TOKEN_ERROR_UNEXPECTED_CHARACTER,
+    TOKEN_ERROR_UNTERMINATED_STRING,
 }TokenType;
 
 typedef struct {
@@ -55,12 +56,17 @@ typedef struct {
     const char *start;
     int length;
     int line;
-    char unexpect;
 }Token;
 
-void init_scanner(const char *source);
+typedef struct {
+    const char *start;
+    const char *current;
+    int line;
+}Scanner;
 
-Token scan_token();
+void init_scanner(Scanner *scanner, const char *source);
+
+Token scan_token(Scanner *scanner);
 
 #endif
 
