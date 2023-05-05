@@ -26,6 +26,7 @@ typedef struct {
     Table strings;
     Obj *objects;
     ObjUpvalue* openUpvalues;
+    ObjString* initString;
 
     int grayCount;
   int grayCapacity;
@@ -33,6 +34,8 @@ typedef struct {
 
   size_t bytesAllocated;
   size_t nextGC;
+
+
 }VM;
 
 typedef enum {

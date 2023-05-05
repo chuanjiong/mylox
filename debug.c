@@ -32,6 +32,15 @@ static int byteInstruction(const char* name, Chunk* chunk,
   printf("%-16s %4d\n", name, slot);
   return offset + 2;
 }
+static int invokeInstruction(const char* name, Chunk* chunk,
+                                int offset) {
+  uint8_t constant = chunk->code[offset + 1];
+  uint8_t argCount = chunk->code[offset + 2];
+  printf("%-16s (%d args) %4d '", name, argCount, constant);
+  print_value(chunk->constants.values[constant]);
+  printf("'\n");
+  return offset + 3;
+}
 
 static int jumpInstruction(const char* name, int sign,
                            Chunk* chunk, int offset) {
@@ -129,6 +138,10 @@ int disassembleInstruction(Chunk *chunk, int offset)
       return constant_instruction("OP_GET_PROPERTY", chunk, offset);
     case OP_SET_PROPERTY:
       return constant_instruction("OP_SET_PROPERTY", chunk, offset);
+      case OP_METHOD:
+      return constant_instruction("OP_METHOD", chunk, offset);
+      case OP_INVOKE:
+      return invokeInstruction("OP_INVOKE", chunk, offset);
 
         default:
             printf("Unknown opcode %d\n", instruction);
@@ -161,6 +174,10 @@ void print_object(Value value)
       case OBJ_INSTANCE:
       printf("%s instance",
              AS_INSTANCE(value)->klass->name->chars);
+
+      break;
+      case OBJ_BOUND_METHOD:
+      // printFunction(AS_BOUND_METHOD(value)->method->function);
       break;
     }
 }

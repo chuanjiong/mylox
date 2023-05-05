@@ -12,6 +12,7 @@ typedef enum {
     OBJ_UPVALUE,
     OBJ_CLASS,
     OBJ_INSTANCE,
+    OBJ_BOUND_METHOD,
 }ObjType;
 
 typedef struct Obj {

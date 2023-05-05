@@ -32,6 +32,7 @@ typedef struct {
 typedef struct {
   Obj obj;
   ObjString* name;
+  Table methods;
 } ObjClass;
 
 typedef struct {
@@ -39,6 +40,12 @@ typedef struct {
   ObjClass* klass;
   Table fields;
 } ObjInstance;
+
+typedef struct {
+  Obj obj;
+  Value receiver;
+  ObjClosure* method;
+} ObjBoundMethod;
 
 
 typedef Value (*NativeFn)(int argCount, Value* args);
@@ -61,6 +68,8 @@ ObjUpvalue* newUpvalue(Value* slot);
 ObjClass* newClass(ObjString* name);
 
 ObjInstance* newInstance(ObjClass* klass);
+
+ObjBoundMethod* newBoundMethod(Value receiver, ObjClosure* method);
 
 #endif
 
